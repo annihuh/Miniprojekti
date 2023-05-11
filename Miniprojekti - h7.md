@@ -124,7 +124,7 @@ Kokeilin ajaa komennon uudestaan ja vastaus tuli normaalisti, eikä tilasta tull
 
     sudo salt '*' state.apply mini
 
-Tässä tuloste toiselta koneelta.
+Tässä tuloste toiselta koneelta (Unohdin ottaa kuvan, joten otin sen myöhemmin pienen muokkauksen jälkeen).
 
     a001:
     ----------

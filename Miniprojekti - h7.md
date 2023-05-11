@@ -1,8 +1,8 @@
 # h7 - Miniprojekti
 
-Valmiustaso: kesken (alpha)
+Valmiustaso: Valmis
 
-Projektin tarkoitus 
+Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen manuaalisesti ja automatisoiden Saltilla.
 
 ## Rauta
 
@@ -213,9 +213,9 @@ Testi koneella a002:
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/d93ee84d-98f8-4f7b-a1e2-bd951aca4193">
 
-## Wireguard käsin
+## Wireguard VPN käsin
 
-
+Aloitin Wireguardin asennuksen amaster-koneella ajamalla komennon `sudo apt-get install wireguard` ja hyväksymällä kysytyt kysymykset. Sen jälkeen aloin luomaan VPN-yhteyttä
 
 ## Wireguardin automatisointi
 

@@ -1,4 +1,4 @@
-# Alla Vagrantfilen sisältö. Käytössä kurssilla annettu pohja, jossa muutoksena koneiden nimet. Alkuperäinen luoja on kurssi opettaja, Tero Karvinen.
+# Alla Vagrantfilen sisältö. Käytössä kurssilla annettu pohja, jossa muutoksena koneiden nimet. Alkuperäinen luoja on kurssin opettaja, Tero Karvinen.
 
 # -*- mode: ruby -*-
 # vi: set ft=ruby :

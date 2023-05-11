@@ -41,11 +41,11 @@ Katsoin lopputuloksen komennolla `sudo ufw status`:
     OpenSSH                    ALLOW       Anywhere
     OpenSSH (v6)               ALLOW       Anywhere (v6)
 
-Huom. Yleensä myös esim. portit 80 ja 443 ovat auki tai avataan, mutta tämän projektin kannalta ei se ole olennaista. Kokeilin yhdistää ssh:lla a001-koneelta amasterille sekä toisinpäin. Se onnistui molemmilla kerroilla. Kuvassa a001 > amaster.
+Huom. Yleensä myös esim. portit 80 ja 443 ovat auki tai avataan, mutta tämän projektin kannalta se ei ole olennaista. Kokeilin yhdistää SSH:lla a001-koneelta amasterille sekä toisinpäin. Se onnistui molemmilla kerroilla. Kuvassa a001 > amaster. 
 
 <img width="auto" alt="image" src="https://user-images.githubusercontent.com/101214286/236806945-4b68199a-8c15-41e9-aa6e-8d515363a984.png">
 
-Halusin vielä kokeilla, että kiellän Telnetin UFW:ssä ja testaan sen. Ajoin siis komennot 
+Olin jo aikaisemmin tehnyt SSH-avainten generoinnin ja muut tarvittavat toimenpiteet eli ei ollut ratkaistavia yhteysongelmia. Halusin vielä kokeilla, että kiellän Telnetin UFW:ssä ja testaan sen. Ajoin siis komennot 
 
     sudo ufw deny telnet
     sudo ufw enable
@@ -218,7 +218,7 @@ Testi koneella a002:
 
 ## Wireguard VPN käsin
 
-Aloitin Wireguardin asennuksen amaster-koneella ajamalla komennon `sudo apt-get install wireguard` ja hyväksymällä kysytyt kysymykset. Sen jälkeen aloin luomaan VPN-yhteyttä
+Aloitin Wireguardin asennuksen amaster-koneella päivittämällä taas koneen ja sen jälkeen ajamalla komennon `sudo apt-get install wireguard` ja hyväksymällä kysymyksen. Sen jälkeen aloin luomaan 
 
 ## Wireguardin automatisointi
 
@@ -235,4 +235,6 @@ https://docs.saltproject.io/salt/user-guide/en/latest/topics/states.html
 https://docs.saltproject.io/salt/user-guide/en/latest/topics/requisites.html#requisites
 
 https://github.com/rikurikurikuriku/Palvelinten-hallinta/blob/H7-Oma-Moduli/init.sls
+
+https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-debian-11
 

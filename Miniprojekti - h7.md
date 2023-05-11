@@ -216,11 +216,37 @@ Testi koneella a002:
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/d93ee84d-98f8-4f7b-a1e2-bd951aca4193">
 
-## Wireguard VPN käsin
+## WireGuard VPN käsin
 
-Aloitin Wireguardin asennuksen amaster-koneella päivittämällä taas koneen ja sen jälkeen ajamalla komennon `sudo apt-get install wireguard` ja hyväksymällä kysymyksen. Sen jälkeen aloin luomaan 
+Aloitin WireGuardin asennuksen amaster-koneella päivittämällä taas koneen ja sen jälkeen ajamalla komennon `sudo apt-get install wireguard`. Sen jälkeen aloin luomaan yksityistä ja julkista avainparia, käytin komentoja `wg genkey` ja `wg pubkey` luomaan ne. Samalla lisäsin nämä avaimet WireGuardin konfigurointitiedostoon sekä muutin oikeuksia `chmod`, että kuka tahansa ei pääse lukemaan yksityistä avainta, koska se on oletuksena kaikkien luettavissa. 
 
-## Wireguardin automatisointi
+Siis aluksi ajoin komennon, joka luo avaimen ja joka samalla kopioi sen haluttuun sijaintiin. Eli `sudo tee` lukee edellisen komennon tuloksen ja kirjoittaa sen private.key-tiedostoon.
+
+    wg genkey | sudo tee /etc/wireguard/private.key
+
+Tämän jälkeen muokkasin yksityisen avaimen lukuoikeudet muilta kuin rootilta (g = group, o = others, = eli poista).
+
+    sudo chmod go= /etc/wireguard/private.key
+
+Terkistin tämän jälkeen rootilla, että avain oli generoitunut oikeaan paikkaan `sudo cat /etc/wireguard/private.key`. Generointi oli onnistunut. Seuraavaksi generoin vastaavan julkisen avaimen, jonka teen yksityisen avaimen avulla. Se onnistui tällä komennolla. 
+
+    sudo cat /etc/wireguard/private.key | wg pubkey | sudo tee /etc/wireguard/public.key
+
+Ensimmäinen osio lukee private.key-avaimen, toinen generoi uuden julkisen avaimen vastaamaan yksityistä avainta  ja viimeinen vaihe kirjoittaa avaimen sijaintiin `/etc/wireguard/public.key`. Komento oli onnistunut, koska ajamisen jälkeen tulostui rivi, joka oli generoitunut avain: `S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=`. Molempien avainten generointi WireGuard-palvelimelle onnistui. Seuraavaksi valitsin IPv4-osoitealueen, jota käytän VPN-verkkona `172.16.0.0/24` sekä päätin ns. tunneliosoitteen `172.16.0.1`, jonka kautta VPN-yhteys toimii. 
+
+Kun kaikki edellämainittu on tehty ja valittu etenin vaiheeseen, jossa teen uuden WireGuard konfigurointitiedoston kansioon `/etc/wireguard/wg0.conf`. Tiedoston sisältö tässä vaiheessa:
+
+    [Interface]
+    PrivateKey = yksityinen avain
+    Address = 172.16.0.1/24
+    ListenPort = 51820
+    SaveConfig = true
+
+Ylhäältä alas luetentuna kohdat tarkoittavat: ensimmäisenä määritellään, että muokkauksen kohteena on interface-asetukset, toisena on aiemmin luotu yksityinen avain, kolmantena kerrotaan valittu ipv4-osite, neljäntenä määritellään WireGuardin käyttämä portti ja viimeinen kohta varmistaa sen, että kun WireGuardin interface/liittymä on suljettuna kaikki muutokset tallennetaan konfigurointitiedostoon. Tallensin tiedoston ja jatkoin eteenpäin.
+
+
+
+## WireGuardin automatisointi
 
 
 

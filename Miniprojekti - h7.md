@@ -211,7 +211,7 @@ Menin vielä kokeilemaan yhteyksiä minioneille. Avasin siis uudet terminaalit j
 
 Testi koneella a002:
 
-<img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/a9151472-b6d9-465a-a945-8840caaf0420">
+<img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/d93ee84d-98f8-4f7b-a1e2-bd951aca4193">
 
 ## Wireguard käsin
 

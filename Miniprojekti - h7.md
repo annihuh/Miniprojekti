@@ -242,7 +242,7 @@ Kun kaikki edellämainittu on tehty ja valittu etenin vaiheeseen, jossa teen uud
     ListenPort = 51820
     SaveConfig = true
 
-Ylhäältä alas luetentuna kohdat tarkoittavat: ensimmäisenä määritellään, että muokkauksen kohteena on interface-asetukset, toisena on aiemmin luotu yksityinen avain, kolmantena kerrotaan valittu ipv4-osite, neljäntenä määritellään WireGuardin käyttämä portti ja viimeinen kohta varmistaa sen, että kun WireGuardin interface/liittymä on suljettuna kaikki muutokset tallennetaan konfigurointitiedostoon. Tallensin tiedoston ja jatkoin eteenpäin.
+Ylhäältä alas lueteltuna kohdat tarkoittavat: ensimmäisenä määritellään, että muokkauksen kohteena on interface-asetukset, toisena on aiemmin luotu yksityinen avain, kolmantena kerrotaan valittu ipv4-osite, neljäntenä määritellään WireGuardin käyttämä portti ja viimeinen kohta varmistaa sen, että kun WireGuardin interface/liittymä on suljettuna kaikki muutokset tallennetaan konfigurointitiedostoon. Tallensin tiedoston ja jatkoin eteenpäin.
 
 
 

@@ -231,4 +231,6 @@ https://docs.saltproject.io/en/getstarted/config/functions.html
 
 https://docs.saltproject.io/salt/user-guide/en/latest/topics/states.html
 
+https://docs.saltproject.io/salt/user-guide/en/latest/topics/requisites.html#requisites
+
 https://github.com/jullegrigori/Palvelinten-hallinta/blob/main/h7b.md

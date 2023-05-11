@@ -8,7 +8,7 @@ Projektin tarkoitus
 
     speksit tähän
 
-## Käsin
+## UFW käsin
 
 Projektissani asennan UFW:n eli Uncomplicated Firewallin isäntä-orja-arkkitehtuuria käyttäville koneille salttia käyttäen. Aloitin asentamisen sillä, että käytin kurssin alussa annettua Vagrantfile-tiedostoa, joka määrittelee isännän ja orjien tietoja. Muutin hieman koneiden nimiä: `t001 > a001` ja käynnistin ne komennolla `vagrant up`. Kirjauduin amaster koneelle `vagrant ssh amaster`. Ajoin komennon `sudo salt-key -A` ja hyväksyin avaimet a001 ja a002. Nyt ympäristö on valmis käytettäväksi.
 
@@ -67,12 +67,12 @@ Tämä tarkoittaa sitä, että UFW:n konfiguraatiot on onnistuneet ja Telnet-yht
 
     telnet: Unable to connect to remote host: Connection timed out
 
-## Automatisointi
+## UFW:n automatisointi
 
-Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. Komento siis luo pääkäyttäjän oikeuksien avulla mini-kansion annettuun sijaintiin ja kaikki puuttuvat kansiot sen edeltä. Sinne lisään tiedoston init.sls komennolla `sudoedit init.sls`. Lisäsin sisältöä:
+Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. Komento siis luo pääkäyttäjän oikeuksien avulla mini-kansion annettuun sijaintiin ja kaikki puuttuvat kansiot sen edeltä. Sinne lisään tiedoston init.sls komennolla `sudoedit init.sls`. Salt-tilan sisältö:
 
     ufw:
-      pkg.installed:
+      pkg.installed
     
     openssh:
       pkg.installed:
@@ -90,9 +90,8 @@ Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. 
     ufw_deny_telnet:
       cmd.run:
         - name: ufw deny 23
-    
 
-Ajoin komennon, jonka tarkoitus on vain testata menisikö tilat läpi oikeassa tapauksessa. En halunnut vielä ajaa ns. oikeaa tilaa ennen kuin olin varma, että tiedosto on tehty oikein. Komento:
+Ensimmäinen kohta asentaa UFW-palomuurin, seuraava asentaa ja käynnistää SSH:n. Kolmas sallii SSH-yhteyden ja viimeinen kieltää Telnet-ytheyden. Ajoin komennon, jonka tarkoitus on vain testata menisikö tilat läpi oikeassa tapauksessa. En halunnut vielä ajaa ns. oikeaa tilaa ennen kuin olin varma, että tiedosto on tehty oikein.
 
     sudo salt 'a001' state.apply mini test=True
 
@@ -100,7 +99,7 @@ Siitä tuli virheilmoitus:
 
 <img width="auto" alt="image" src="https://user-images.githubusercontent.com/101214286/236854004-38becafb-76bb-43aa-a30d-7ffb7cb553b3.png">
 
-Jonka totesin johtuvan siitä, että Saltin käyttämät portit 4505 ja 4506 ovat estettyinä. Lisäsin siis vielä manuaalisesti nämä portit toimiviksi ja päivitin listan.
+Jonka totesin johtuvan siitä, että Saltin käyttämät portit 4505 ja 4506 ovat estettyinä. Lisäsin siis vielä manuaalisesti nämä portit toimiviksi amaster-koneen UFW:lle ja päivitin listan.
 
     sudo ufw allow 4505/tcp && sudo ufw allow 4506/tcp
     sudo ufw reload
@@ -120,12 +119,111 @@ Päivittynyt taulukko näytti tältä:
     4505/tcp (v6)              ALLOW       Anywhere (v6)
     4506/tcp (v6)              ALLOW       Anywhere (v6)
 
-Kokeilin ajaa edellisen komennon uudestaa ja vastaus tuli normaalisti.
+Kokeilin ajaa komennon uudestaan ja vastaus tuli normaalisti, eikä tilasta tullut virheilmoituksia. Päätin siis ajaa tilan molemmille koneille:
 
+    sudo salt '*' state.apply mini
 
+Tässä tuloste toiselta koneelta.
 
+    a002:
+    ----------
+          ID: ufw
+    Function: pkg.installed
+      Result: True
+     Comment: The following packages were installed/updated: ufw
+     Started: 18:09:52.432126
+    Duration: 4634.299 ms
+     Changes:
+              ----------
+              ufw:
+                  ----------
+                  new:
+                      0.36-7.1
+                  old:
+    ----------
+          ID: openssh
+    Function: pkg.installed
+        Name: openssh-server
+      Result: True
+     Comment: All specified packages are already installed
+     Started: 18:09:57.078787
+    Duration: 1079.878 ms
+     Changes:
+    ----------
+          ID: openssh
+    Function: pkg.installed
+        Name: openssh-client
+      Result: True
+     Comment: All specified packages are already installed
+     Started: 18:09:58.158921
+    Duration: 9.635 ms
+     Changes:
+    ----------
+          ID: openssh
+    Function: service.running
+        Name: sshd
+      Result: True
+     Comment: The service sshd is already running
+     Started: 18:09:58.175695
+    Duration: 36.297 ms
+     Changes:
+    ----------
+          ID: ufw_allow_ssh
+    Function: cmd.run
+        Name: ufw allow 22
+      Result: True
+     Comment: Command "ufw allow 22" run
+     Started: 18:09:58.215373
+    Duration: 260.155 ms
+     Changes:
+              ----------
+              pid:
+                  16666
+              retcode:
+                  0
+              stderr:
+              stdout:
+                  Rules updated
+                  Rules updated (v6)
+    ----------
+          ID: ufw_deny_telnet
+    Function: cmd.run
+        Name: ufw deny 23
+      Result: True
+     Comment: Command "ufw deny 23" run
+     Started: 18:09:58.475769
+    Duration: 131.845 ms
+     Changes:
+              ----------
+              pid:
+                  16689
+              retcode:
+                  0
+              stderr:
+              stdout:
+                  Rules updated
+                  Rules updated (v6)
+
+    Summary for a002
+    ------------
+    Succeeded: 6 (changed=3)
+    Failed:    0
+    ------------
+    Total states run:     6
+    Total run time:   6.152 s
+
+Menin vielä kokeilemaan yhteyksiä minioneille. Avasin siis uudet terminaalit ja testasin yhteyttä SSH:lla ja Telnetillä. UFW-muutokset toimivat.
+
+Testi koneella a002:
+
+<img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/a9151472-b6d9-465a-a945-8840caaf0420">
+
+## Wireguard käsin
+
+## Wireguardin automatisointi
 
 ## Lähteet
+
 https://www.cyberciti.biz/faq/how-to-configure-firewall-with-ufw-on-ubuntu-20-04-lts/
 
 https://github.com/kri-ku/my_first_salt/blob/master/raportti.md

@@ -72,7 +72,8 @@ Tämä tarkoittaa sitä, että UFW:n konfiguraatiot on onnistuneet ja Telnet-yht
 Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. Komento siis luo pääkäyttäjän oikeuksien avulla mini-kansion annettuun sijaintiin ja kaikki puuttuvat kansiot sen edeltä. Sinne lisään tiedoston init.sls komennolla `sudoedit init.sls`. Salt-tilan sisältö:
 
     ufw:
-      pkg.installed
+      pkg.installed:
+        - name: ufw
     
     openssh:
       pkg.installed:
@@ -125,29 +126,23 @@ Kokeilin ajaa komennon uudestaan ja vastaus tuli normaalisti, eikä tilasta tull
 
 Tässä tuloste toiselta koneelta.
 
-    a002:
+    a001:
     ----------
           ID: ufw
     Function: pkg.installed
       Result: True
-     Comment: The following packages were installed/updated: ufw
-     Started: 18:09:52.432126
-    Duration: 4634.299 ms
+     Comment: All specified packages are already installed
+     Started: 18:38:36.024312
+    Duration: 28.241 ms
      Changes:
-              ----------
-              ufw:
-                  ----------
-                  new:
-                      0.36-7.1
-                  old:
     ----------
           ID: openssh
     Function: pkg.installed
         Name: openssh-server
       Result: True
      Comment: All specified packages are already installed
-     Started: 18:09:57.078787
-    Duration: 1079.878 ms
+     Started: 18:38:36.052748
+    Duration: 7.354 ms
      Changes:
     ----------
           ID: openssh
@@ -155,8 +150,8 @@ Tässä tuloste toiselta koneelta.
         Name: openssh-client
       Result: True
      Comment: All specified packages are already installed
-     Started: 18:09:58.158921
-    Duration: 9.635 ms
+     Started: 18:38:36.060237
+    Duration: 6.987 ms
      Changes:
     ----------
           ID: openssh
@@ -164,8 +159,8 @@ Tässä tuloste toiselta koneelta.
         Name: sshd
       Result: True
      Comment: The service sshd is already running
-     Started: 18:09:58.175695
-    Duration: 36.297 ms
+     Started: 18:38:36.069151
+    Duration: 42.211 ms
      Changes:
     ----------
           ID: ufw_allow_ssh
@@ -173,44 +168,44 @@ Tässä tuloste toiselta koneelta.
         Name: ufw allow 22
       Result: True
      Comment: Command "ufw allow 22" run
-     Started: 18:09:58.215373
-    Duration: 260.155 ms
+     Started: 18:38:36.114709
+    Duration: 115.684 ms
      Changes:
               ----------
               pid:
-                  16666
+                  17739
               retcode:
                   0
               stderr:
               stdout:
-                  Rules updated
-                  Rules updated (v6)
+                  Skipping adding existing rule
+                  Skipping adding existing rule (v6)
     ----------
           ID: ufw_deny_telnet
     Function: cmd.run
         Name: ufw deny 23
       Result: True
      Comment: Command "ufw deny 23" run
-     Started: 18:09:58.475769
-    Duration: 131.845 ms
+     Started: 18:38:36.230728
+    Duration: 123.654 ms
      Changes:
               ----------
               pid:
-                  16689
+                  17753
               retcode:
                   0
               stderr:
               stdout:
-                  Rules updated
-                  Rules updated (v6)
+                  Skipping adding existing rule
+                  Skipping adding existing rule (v6)
 
-    Summary for a002
+    Summary for a001
     ------------
-    Succeeded: 6 (changed=3)
+    Succeeded: 6 (changed=2)
     Failed:    0
     ------------
     Total states run:     6
-    Total run time:   6.152 s
+    Total run time: 324.131 ms
 
 Menin vielä kokeilemaan yhteyksiä minioneille. Avasin siis uudet terminaalit ja testasin yhteyttä SSH:lla ja Telnetillä. UFW-muutokset toimivat.
 
@@ -220,7 +215,11 @@ Testi koneella a002:
 
 ## Wireguard käsin
 
+
+
 ## Wireguardin automatisointi
+
+
 
 ## Lähteet
 

@@ -228,12 +228,11 @@ Aloitin Wireguardin asennuksen amaster-koneella ajamalla komennon `sudo apt-get 
 
 https://www.cyberciti.biz/faq/how-to-configure-firewall-with-ufw-on-ubuntu-20-04-lts/
 
-https://github.com/kri-ku/my_first_salt/blob/master/raportti.md
-
 https://docs.saltproject.io/en/getstarted/config/functions.html
 
 https://docs.saltproject.io/salt/user-guide/en/latest/topics/states.html
 
 https://docs.saltproject.io/salt/user-guide/en/latest/topics/requisites.html#requisites
 
-https://github.com/jullegrigori/Palvelinten-hallinta/blob/main/h7b.md
+https://github.com/rikurikurikuriku/Palvelinten-hallinta/blob/H7-Oma-Moduli/init.sls
+

@@ -38,7 +38,7 @@ Katsoin lopputuloksen komennolla `sudo ufw status`:
     OpenSSH                    ALLOW       Anywhere
     OpenSSH (v6)               ALLOW       Anywhere (v6)
 
-Kokeilin yhdistää ssh:lla a001-koneelta amasterille sekä toisinpäin. Se onnistui molemmilla kerroilla. Kuvassa a001 > amaster.
+Huom. Yleensä myös esim. portit 80 ja 443 ovat auki tai avataan, mutta tämän projektin kannalta ei se ole olennaista. Kokeilin yhdistää ssh:lla a001-koneelta amasterille sekä toisinpäin. Se onnistui molemmilla kerroilla. Kuvassa a001 > amaster.
 
 <img width="auto" alt="image" src="https://user-images.githubusercontent.com/101214286/236806945-4b68199a-8c15-41e9-aa6e-8d515363a984.png">
 
@@ -69,10 +69,28 @@ Tämä tarkoittaa sitä, että UFW:n konfiguraatiot on onnistuneet ja Telnet-yht
 
 ## Automatisointi
 
-Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. Komento siis luo pääkäyttäjän oikeuksien avulla mini-kansion annettuun sijaintiin ja kaikki puuttuvat kansiot sen edeltä. Sinne lisään tiedoston init.sls komennolla `sudoedit init.sls`. Lisäsin vähän sisältöä:
+Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. Komento siis luo pääkäyttäjän oikeuksien avulla mini-kansion annettuun sijaintiin ja kaikki puuttuvat kansiot sen edeltä. Sinne lisään tiedoston init.sls komennolla `sudoedit init.sls`. Lisäsin sisältöä:
 
     ufw:
-      pkg.installed
+      pkg.installed:
+    
+    openssh:
+      pkg.installed:
+        - names:
+          - openssh-server
+          - openssh-client
+      service.running:
+        - name: sshd
+        - enable: True
+    
+    ufw_allow_ssh:
+      cmd.run:
+        - name: ufw allow 22
+    
+    ufw_deny_telnet:
+      cmd.run:
+        - name: ufw deny 23
+    
 
 Ajoin komennon, jonka tarkoitus on vain testata menisikö tilat läpi oikeassa tapauksessa. En halunnut vielä ajaa ns. oikeaa tilaa ennen kuin olin varma, että tiedosto on tehty oikein. Komento:
 
@@ -104,7 +122,7 @@ Päivittynyt taulukko näytti tältä:
 
 Kokeilin ajaa edellisen komennon uudestaa ja vastaus tuli normaalisti.
 
-KESKEN
+
 
 
 ## Lähteet
@@ -113,5 +131,7 @@ https://www.cyberciti.biz/faq/how-to-configure-firewall-with-ufw-on-ubuntu-20-04
 https://github.com/kri-ku/my_first_salt/blob/master/raportti.md
 
 https://docs.saltproject.io/en/getstarted/config/functions.html
+
+https://docs.saltproject.io/salt/user-guide/en/latest/topics/states.html
 
 https://github.com/jullegrigori/Palvelinten-hallinta/blob/main/h7b.md

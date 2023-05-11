@@ -6,7 +6,10 @@ Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen man
 
 ## Rauta
 
-    speksit tähän
+    Hostkone: Windows 11 Home
+    CPU: Intel(R) Core(TM) i3-8130U CPU @ 2.20GHz   2.21 GHz
+    Järjestelmätyyppi: x64-suoritin
+    Linux: Debian GNU/Linux 11 (bullseye)
 
 ## UFW käsin
 

@@ -307,13 +307,13 @@ Seuraavaksi avasin tunnelin a001:llä ja katsoin statuksen.
       endpoint: 192.168.12.3:51820
       allowed ips: 172.16.0.0/24
 
-Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että UFW avaa WireGuardin vaatiman portin. Nyt VPN on valmis käytettäväksi. Kokeilin vielä pingaamalla, että kulkeeko liikenne VPN:n läpi.
+Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että UFW avaa WireGuardin vaatiman portin. Nyt VPN on valmis käytettäväksi. Kokeilin vielä pingaamalla, että kulkeeko liikenne VPN:n läpi. Toimi molemmin päin.
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/18c8389d-f614-4d1d-aa89-a54a2b8950eb">
 
 ## WireGuardin automatisointi
 
-
+Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen.
 
 ## Lähteet
 
@@ -329,3 +329,4 @@ https://github.com/rikurikurikuriku/Palvelinten-hallinta/blob/H7-Oma-Moduli/init
 
 https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-debian-11
 
+https://upcloud.com/resources/tutorials/get-started-wireguard-vpn

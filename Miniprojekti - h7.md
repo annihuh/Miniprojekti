@@ -313,7 +313,9 @@ Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että
 
 ## WireGuardin automatisointi
 
-Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. 
+Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin init.sls-tiedostoon seuraavat kohdat:
+
+
 
 ## Lähteet
 
@@ -330,3 +332,5 @@ https://github.com/rikurikurikuriku/Palvelinten-hallinta/blob/H7-Oma-Moduli/init
 https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-debian-11
 
 https://upcloud.com/resources/tutorials/get-started-wireguard-vpn
+
+https://docs.saltproject.io/en/latest/ref/modules/all/index.html#all-salt-modules

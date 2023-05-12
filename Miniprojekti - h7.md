@@ -4,7 +4,9 @@ Valmiustaso: Valmis
 
 Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen manuaalisesti ja automatisoiden Saltilla.
 
-[Siirry UFW:n automatisointiin](#ufwn-automatisointi)
+[Linkki UFW:n automatisointiin](#ufwn-automatisointi)
+[Linkki WireGuardin automatisointiin](#wireguard-vpn-käsin)
+
 
 ## Rauta
 

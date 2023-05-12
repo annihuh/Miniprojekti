@@ -313,7 +313,7 @@ Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että
 
 ## WireGuardin automatisointi
 
-Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen.
+Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. 
 
 ## Lähteet
 

@@ -246,7 +246,7 @@ Ensimmäinen osio lukee private.key-avaimen, toinen generoi uuden julkisen avaim
 Kun kaikki edellämainittu on tehty ja valittu etenin vaiheeseen, jossa teen uuden WireGuard konfigurointitiedoston kansioon `/etc/wireguard/wg0.conf`. Tiedoston sisältö tässä vaiheessa:
 
     [Interface]
-    PrivateKey = yksityinen avain
+    PrivateKey = 
     Address = 172.16.0.1/24
     ListenPort = 51820
     SaveConfig = true
@@ -269,7 +269,7 @@ Tuloksesta näkee myös esimerkiksi aikaisemmin määritellyn ip-osoitteen.
 Nyt server-puoli on valmis ja voin siirtyä konfiguroimaan clienttiä. Päivitin ja asensin WireGuardin a001:lle. Ja generoin avaimet sekä muutin oikeudet samoin kuin aikaisemmin. Alla tiedoston wg0.conf sisältö. Interface-kohdassa määritellään a001:n tiedot ja Peer-kohdassa amasterin eli serverin tiedot.
 
     [Interface]
-    PrivateKey = yksityinen avain
+    PrivateKey = 
     Address = 172.16.0.100/24
 
     [Peer]

@@ -271,17 +271,18 @@ Nyt server-puoli on valmis ja voin siirtyä konfiguroimaan clienttiä. Päivitin
     [Interface]
     PrivateKey = 
     Address = 172.16.0.100/24
+    ListenPort = 51820
 
     [Peer]
     PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
-    AllowedIPs = 172.16.0.0/24, 192.168.12.0/24
+    AllowedIPs = 172.16.0.0/24
     Endpoint = 192.168.12.3:51820
 
-AllowedIPs-kohdassa määritin kaksi verkkoa, jotka reititetään VPN:n kautta. Endpointissa määrittelin osoitteen ja portin, johon haluan VPN-yhteyden yhdistyvän. Tähän kohtaan yleensä laitetaan julkinen ip-osoite. Kun sain määriteltyä a001:lle wg0.conf-tiedoston, menin vielä lisäämään amasterille a001 tiedot komennolla:
+AllowedIPs-kohdassa määritin verkon, jota reititetään VPN:n kautta. Endpointissa määrittelin osoitteen ja portin, johon haluan VPN-yhteyden yhdistyvän. Tähän kohtaan yleensä laitetaan julkinen ip-osoite. Kun sain määriteltyä a001:lle wg0.conf-tiedoston, lisäsin amasterille tiedon, että se sallii kaikki osoitteet verkosta:
 
-    sudo wg set wg0 peer PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI= allowed-ips 172.16.0.100
+    sudo wg set wg0 peer PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI= allowed-ips 172.16.0.0/24
 
-Ja tarkistin, miltä tiedosto näytti.
+Ja tarkistin, miltä tiedosto näytti amasterilla.
 
     $ sudo wg
     interface: wg0
@@ -290,9 +291,25 @@ Ja tarkistin, miltä tiedosto näytti.
       listening port: 51820
 
     peer: PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI=
-      allowed ips: 172.16.0.100/32
+      allowed ips: 172.16.0.0/24
 
-Viimeisessä kohdassa on maski /32, koska tähän kohtaan voidaan määritellä vain tarkkoja osoitteita. Seuraavaksi yhdistin ja avasin tunnelin a001:llä. 
+Seuraavaksi avasin tunnelin a001:llä ja katsoin statuksen.
+
+    sudo wg-quick up wg0
+    sudo wg
+    
+    interface: wg0
+      public key: PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI=
+      private key: (hidden)
+      listening port: 51820
+
+    peer: S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+      endpoint: 192.168.12.3:51820
+      allowed ips: 172.16.0.0/24
+
+Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että UFW avaa WireGuardin vaatiman portin. Nyt VPN on valmis käytettäväksi. Kokeilin vielä pingaamalla, että kulkeeko liikenne VPN:n läpi.
+
+<img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/18c8389d-f614-4d1d-aa89-a54a2b8950eb">
 
 ## WireGuardin automatisointi
 

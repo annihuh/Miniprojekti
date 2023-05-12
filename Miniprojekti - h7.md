@@ -253,7 +253,46 @@ Kun kaikki edellämainittu on tehty ja valittu etenin vaiheeseen, jossa teen uud
 
 Ylhäältä alas lueteltuna kohdat tarkoittavat: ensimmäisenä määritellään, että muokkauksen kohteena on interface-asetukset, toisena on aiemmin luotu yksityinen avain, kolmantena kerrotaan valittu ipv4-osite, neljäntenä määritellään WireGuardin käyttämä portti ja viimeinen kohta varmistaa sen, että kun WireGuardin interface/liittymä on suljettuna kaikki muutokset tallennetaan konfigurointitiedostoon. Tallensin tiedoston ja jatkoin eteenpäin.
 
-Seuraavaksi 
+Seuraavaksi konfiguroin WireGuardin pyörimään systemd-palveluna wg-quick skriptin avulla. Tämän avulla minun ei tarvitse avata VPN-tunnelia erikseen joka kerta kun käynnistän koneen. Aktivoin määrittelemälleni wg0-tunnelille wg-quick-palvelun lisäämällä sen systemctl:iin. Systemctl siis käynnistää sen automaattisesti sisäänrakennetun skriptin avulla.
+
+    sudo systemctl enable wg-quick@wg0.service
+
+Käynnistin palvelun ja tarkistin, että se on päällä.
+
+    sudo systemctl start wg-quick@wg0.service
+    sudo systemctl status wg-quick@wg0.service
+
+Tuloksesta näkee myös esimerkiksi aikaisemmin määritellyn ip-osoitteen.
+
+<img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/cdb6f847-d36f-4df2-8028-471b637d15dc">
+
+Nyt server-puoli on valmis ja voin siirtyä konfiguroimaan clienttiä. Päivitin ja asensin WireGuardin a001:lle. Ja generoin avaimet sekä muutin oikeudet samoin kuin aikaisemmin. Alla tiedoston wg0.conf sisältö. Interface-kohdassa määritellään a001:n tiedot ja Peer-kohdassa amasterin eli serverin tiedot.
+
+    [Interface]
+    PrivateKey = yksityinen avain
+    Address = 172.16.0.100/24
+
+    [Peer]
+    PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+    AllowedIPs = 172.16.0.0/24, 192.168.12.0/24
+    Endpoint = 192.168.12.3:51820
+
+AllowedIPs-kohdassa määritin kaksi verkkoa, jotka reititetään VPN:n kautta. Endpointissa määrittelin osoitteen ja portin, johon haluan VPN-yhteyden yhdistyvän. Tähän kohtaan yleensä laitetaan julkinen ip-osoite. Kun sain määriteltyä a001:lle wg0.conf-tiedoston, menin vielä lisäämään amasterille a001 tiedot komennolla:
+
+    sudo wg set wg0 peer PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI= allowed-ips 172.16.0.100
+
+Ja tarkistin, miltä tiedosto näytti.
+
+    $ sudo wg
+    interface: wg0
+      public key: S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+      private key: (hidden)
+      listening port: 51820
+
+    peer: PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI=
+      allowed ips: 172.16.0.100/32
+
+Viimeisessä kohdassa on maski /32, koska tähän kohtaan voidaan määritellä vain tarkkoja osoitteita. Seuraavaksi yhdistin ja avasin tunnelin a001:llä. 
 
 ## WireGuardin automatisointi
 

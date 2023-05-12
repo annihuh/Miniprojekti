@@ -4,7 +4,7 @@ Valmiustaso: Valmis
 
 Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen manuaalisesti ja automatisoiden Saltilla.
 
-[link](## UFW:n automatisointi)
+[link](##-UFW:n-automatisointi)
 
 ## Rauta
 

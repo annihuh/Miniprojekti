@@ -2,7 +2,11 @@
 
 Valmiustaso: Valmis
 
-Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen manuaalisesti ja automatisoiden Saltilla.
+Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen manuaalisesti ja automatisoiden Saltilla. Tämä projekti on kurssin Palvelinten hallinta ici001as3a-3001, https://terokarvinen.com/2023/palvelinten-hallinta-2023-kevat/ loppuprojekti.
+
+## Mitä tein 
+
+KIRJOITA LOPPURATKAISU
 
 [Linkki UFW:n automatisointiin](#ufwn-automatisointi)
 
@@ -249,7 +253,7 @@ Kun kaikki edellämainittu on tehty ja valittu etenin vaiheeseen, jossa teen uud
 
 Ylhäältä alas lueteltuna kohdat tarkoittavat: ensimmäisenä määritellään, että muokkauksen kohteena on interface-asetukset, toisena on aiemmin luotu yksityinen avain, kolmantena kerrotaan valittu ipv4-osite, neljäntenä määritellään WireGuardin käyttämä portti ja viimeinen kohta varmistaa sen, että kun WireGuardin interface/liittymä on suljettuna kaikki muutokset tallennetaan konfigurointitiedostoon. Tallensin tiedoston ja jatkoin eteenpäin.
 
-
+Seuraavaksi 
 
 ## WireGuardin automatisointi
 

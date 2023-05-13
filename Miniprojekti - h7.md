@@ -83,6 +83,10 @@ Tämä tarkoittaa sitä, että UFW:n konfiguraatiot on onnistuneet ja Telnet-yht
 
 Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. Komento siis luo pääkäyttäjän oikeuksien avulla mini-kansion annettuun sijaintiin ja kaikki puuttuvat kansiot sen edeltä. Sinne lisään tiedoston init.sls komennolla `sudoedit init.sls`. Salt-tilan sisältö:
 
+    update:
+      cmd.run:
+        - name: "sudo apt-get update"
+   
     ufw:
       pkg.installed:
         - name: ufw
@@ -98,11 +102,11 @@ Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. 
     
     ufw_allow_ssh:
       cmd.run:
-        - name: ufw allow 22
+        - name: "ufw allow 22"
     
     ufw_deny_telnet:
       cmd.run:
-        - name: ufw deny 23
+        - name: "ufw deny 23"
 
 Ensimmäinen kohta asentaa UFW-palomuurin, seuraava asentaa ja käynnistää SSH:n. Kolmas sallii SSH-yhteyden ja viimeinen kieltää Telnet-ytheyden. Ajoin komennon, jonka tarkoitus on vain testata menisikö tilat läpi oikeassa tapauksessa. En halunnut vielä ajaa ns. oikeaa tilaa ennen kuin olin varma, että tiedosto on tehty oikein.
 
@@ -315,7 +319,7 @@ Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että
 
 Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin init.sls-tiedostoon seuraavat kohdat:
 
-
+        
 
 ## Lähteet
 

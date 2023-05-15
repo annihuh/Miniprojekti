@@ -1,32 +1,5 @@
 # h7 - Miniprojekti
 
-Valmiustaso: Valmis
-
-Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen manuaalisesti ja automatisoiden Saltilla. Tämä projekti on kurssin Palvelinten hallinta ici001as3a-3001, https://terokarvinen.com/2023/palvelinten-hallinta-2023-kevat/ loppuprojekti.
-
-## Mitä teen 
-
-Asensin ja konfiguroin UFW:n ja WireGuardin käsin, jonka jälkeen tein saman saltilla niin pitkälle kuin pystyi.
-
-- Asensin UFW:n
-- Sallin SSH-yhteyden ja kielsin Telnetin
-- Testasin säännöt
-- Automatisoin
-- Asensin WireGuardin
-- Loin avaimet
-- Muokkasin wg0.conf tiedoston
-- Testasin
-- Automatisoin niin pitkälle kuin osasin
-
-[Linkki UFW:n automatisointiin](#ufwn-automatisointi)
-
-## Rauta
-
-    Hostkone: Windows 11 Home
-    CPU: Intel(R) Core(TM) i3-8130U CPU @ 2.20GHz   2.21 GHz
-    Järjestelmätyyppi: x64-suoritin
-    Linux: Debian GNU/Linux 11 (bullseye)
-
 ## UFW käsin
 
 Projektissani asennan UFW:n eli Uncomplicated Firewallin isäntä-orja-arkkitehtuuria käyttäville koneille salttia käyttäen. Aloitin asentamisen sillä, että käytin kurssin alussa annettua Vagrantfile-tiedostoa, joka määrittelee isännän ja orjien tietoja. Muutin hieman koneiden nimiä: `t001 > a001` ja käynnistin ne komennolla `vagrant up`. Kirjauduin amaster koneelle `vagrant ssh amaster`. Ajoin komennon `sudo salt-key -A` ja hyväksyin avaimet a001 ja a002. Nyt ympäristö on valmis käytettäväksi.

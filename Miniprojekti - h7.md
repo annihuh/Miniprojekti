@@ -6,12 +6,19 @@ Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen man
 
 ## Mitä tein 
 
-KIRJOITA LOPPURATKAISU
+Asensin ja konfiguroin UFW:n ja WireGuardin käsin, jonka jälkeen tein saman saltilla niin pitkälle kuin pystyi.
+
+- Asensin UFW:n
+- Sallin SSH-yhteyden ja kielsin Telnetin
+- Testasin säännöt
+- Automatisoin
+- Asensin WireGuardin
+- Loin avaimet
+- Muokkasin wg0.conf tiedoston
+- Testasin
+- Automatisoin niin pitkälle kuin osasin
 
 [Linkki UFW:n automatisointiin](#ufwn-automatisointi)
-
-[Linkki WireGuardin automatisointiin](#wireguardin-automatisointi)
-
 
 ## Rauta
 
@@ -225,6 +232,8 @@ Testi koneella a002:
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/d93ee84d-98f8-4f7b-a1e2-bd951aca4193">
 
+[Linkki WireGuardin automatisointiin](#wireguardin-automatisointi)
+
 ## WireGuard VPN käsin
 
 Aloitin WireGuardin asennuksen amaster-koneella päivittämällä taas koneen ja sen jälkeen ajamalla komennon `sudo apt-get install wireguard`. Sen jälkeen aloin luomaan yksityistä ja julkista avainparia, käytin komentoja `wg genkey` ja `wg pubkey` luomaan ne. Samalla lisäsin nämä avaimet WireGuardin konfigurointitiedostoon sekä muutin oikeuksia `chmod`, että kuka tahansa ei pääse lukemaan yksityistä avainta, koska se on oletuksena kaikkien luettavissa. 
@@ -345,7 +354,7 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
 
     {% if grains.get('id') == 'a001' %}
 
-    wg0_config:
+    wg0_config_a001:
       file.managed:
         - name: "/etc/wireguard/wg0.conf"
         - makedirs: True
@@ -365,7 +374,7 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
     
     {% if grains.get('id') == 'a002' %}
 
-    wg0_config:
+    wg0_config_a002:
       file.managed:
         - name: "/etc/wireguard/wg0.conf"
         - makedirs: True
@@ -388,11 +397,15 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
         - name: "sudo wg-quick up wg0"
         - unless: "sudo wg show wg0 | grep -q wg0"
 
-Koska saltilla ei voi käskeä isäntäkonetta on jo kaikki oleteutetusti asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan ja sen oikeudet muutetaan ja luodaan julkinen avain. Seuraavaksi tein Jinjalla (Python-kielen web-pohjamoottori) tilan, joka arpoo ip-osoitteen valitusta verkosta 172.16.0.0/24, joka ei ole käytössä. Tilan sisällä lukee wg0.conf tiedoston haluttu sisältö. Sen jälkeen vielä avasin VPN-tunnelin.
+Koska saltilla ei voi käskeä isäntäkonetta, on kaikki jo asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan, sen oikeudet muutetaan ja luodaan julkinen avain. Seuraavaksi lisäsin molemmille tietokoneille omat tilat, jotka suoritetaan grains.get:n avulla vain niille tarkoitetuilla koneilla. Ja viimeisenä VPN-tunnelin avaus. Tässä siis melkein sama sisältö kuin aikaisemmassa vaiheessa.
 
-Tarkistin menisikö tilat läpi, jonka jälkeen ajoin tilat molemmille koneille onnistuneesti. Seuraavaksi lisäsin ip-osoitteen ja julkisen avaimen amasterille.
+Ajoin tilat molemmille koneille onnistuneesti. Seuraavaksi lisäsin ip-osoitteen ja julkisen avaimen amasterille, koska käytössä on itse keksimäni staattiset osoitteet.
 
-    
+    sudo wg set wg0 peer skOsOgjIp4SJBdlXZbZWMBcPBW6Qxcw3RNBivZnRtVM= allowed-ips 172.16.0.110
+
+
+
+P.s. Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa.
 
 ## Lähteet
 

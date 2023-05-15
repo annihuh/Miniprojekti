@@ -369,7 +369,7 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
       cmd.run:
         - name: "sudo wg-quick up wg0"
 
-
+Koska saltilla ei voi käskeä isäntäkonetta on jo kaikki oleteutetusti asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan ja sen oikeudet muutetaan ja luodaan julkinen avain. Seuraavaksi tein Jinjalla (Python-kielen web-pohjamoottori) tilan, joka arpoo ip-osoitteen valitusta verkosta 172.16.0.0/24, joka ei ole käytössä. Tilan sisällä lukee wg0.conf tiedoston haluttu sisältö. Sen jälkeen vielä avasin VPN-tunnelin.
 
 ## Lähteet
 

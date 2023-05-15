@@ -18,8 +18,6 @@ Asensin ja konfiguroin UFW:n ja WireGuardin käsin, jonka jälkeen tein saman sa
 - Testasin
 - Automatisoin mahdollisimman pitkälle
 
-[Linkki UFW:n automatisointiin](#ufwn-automatisointi)
-
 ## Rauta
 
     Hostkone: Windows 11 Home

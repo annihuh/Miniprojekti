@@ -4,7 +4,7 @@ Valmiustaso: Valmis
 
 Projektin tarkoitus on tutustua perustasolla UFW:n ja VPN:n konfiguroimiseen manuaalisesti ja automatisoiden Saltilla. Tämä projekti on kurssin Palvelinten hallinta ici001as3a-3001, https://terokarvinen.com/2023/palvelinten-hallinta-2023-kevat/ loppuprojekti.
 
-## Mitä tein 
+## Mitä teen 
 
 Asensin ja konfiguroin UFW:n ja WireGuardin käsin, jonka jälkeen tein saman saltilla niin pitkälle kuin pystyi.
 
@@ -250,7 +250,7 @@ Terkistin tämän jälkeen rootilla, että avain oli generoitunut oikeaan paikka
 
     sudo cat /etc/wireguard/private.key | wg pubkey | sudo tee /etc/wireguard/public.key
 
-Ensimmäinen osio lukee private.key-avaimen, toinen generoi uuden julkisen avaimen vastaamaan yksityistä avainta  ja viimeinen vaihe kirjoittaa avaimen sijaintiin `/etc/wireguard/public.key`. Komento oli onnistunut, koska ajamisen jälkeen tulostui rivi, joka oli generoitunut avain: `S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=`. Molempien avainten generointi WireGuard-palvelimelle onnistui. Seuraavaksi valitsin IPv4-osoitealueen, jota käytän VPN-verkkona `172.16.0.0/24` sekä päätin ns. tunneliosoitteen `172.16.0.1`, jonka kautta VPN-yhteys toimii. 
+Ensimmäinen osio lukee private.key-avaimen, toinen generoi uuden julkisen avaimen vastaamaan yksityistä avainta  ja viimeinen vaihe kirjoittaa avaimen sijaintiin `/etc/wireguard/public.key`. Komento oli onnistunut, koska ajamisen jälkeen tulostui rivi, joka oli generoitunut avain: `S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=`. Molempien avainten generointi WireGuard-palvelimelle onnistui. Seuraavaksi valitsin IPv4-osoitealueen, jota käytän VPN-verkkona `172.16.0.0/24` sekä päätin "tunneliosoitteen" `172.16.0.1`, jonka kautta VPN-yhteys toimii. 
 
 Kun kaikki edellämainittu on tehty ja valittu etenin vaiheeseen, jossa teen uuden WireGuard konfigurointitiedoston kansioon `/etc/wireguard/wg0.conf`. Tiedoston sisältö tässä vaiheessa:
 
@@ -316,7 +316,7 @@ Seuraavaksi avasin tunnelin a001:llä ja katsoin statuksen.
       endpoint: 192.168.12.3:51820
       allowed ips: 172.16.0.100/32
 
-Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että UFW avaa WireGuardin vaatiman portin. Nyt VPN on valmis käytettäväksi. Kokeilin vielä pingaamalla, että kulkeeko liikenne VPN:n läpi. Toimi molemmin päin.
+Sen jälkeen suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että UFW avaa WireGuardin vaatiman portin. VPN on valmis käytettäväksi. Kokeilin vielä pingaamalla, että kulkeeko liikenne VPN:n läpi. Toimi molemmin päin.
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/18c8389d-f614-4d1d-aa89-a54a2b8950eb">
 
@@ -415,7 +415,7 @@ Tässä lopputulos:
 
     peer: skOsOgjIp4SJBdlXZbZWMBcPBW6Qxcw3RNBivZnRtVM=
       endpoint: 192.168.12.102:51820
-      allowed ips: 172.16.0.110/32
+      allowed ips: 172.16.0.101/32
       latest handshake: 26 seconds ago
       transfer: 180 B received, 92 B sent
 
@@ -425,9 +425,11 @@ Tässä lopputulos:
       latest handshake: 18 minutes, 43 seconds ago
       transfer: 948 B received, 860 B sent
 
+Tämän jälkeen tein muutoksen amasterilla `/etc/sysctl.conf` tiedostoon, josta otin #-merkin pois riviltä `#net.ipv4.ip_forward=1`. Testasin pingata a001 > a002 ja se onnistui.
 
+<img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/19b9ab8a-2fc0-4ec4-8630-b915e3ef2d92">
 
-P.s. Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa. Jonka takia viimeinen kohta näkyy muokkaantuneena myös.
+Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa. Jonka takia viimeinen kohta näkyy muokkaantuneena myös. Ehdollisuus init.sls-tiedostossa olisi kenties auttanut.
 
 ## Lähteet
 

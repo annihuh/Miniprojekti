@@ -394,8 +394,11 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
     
     open_tunnel:
       cmd.run:
-        - name: "sudo wg-quick up wg0"
-        - unless: "sudo wg show wg0 | grep -q wg0"
+        - name: |
+            "sudo wg-quick down wg0"
+            "sudo wg-quick up wg0"
+        - watch:
+          - file: "/etc/wireguard/wg0.conf"
 
 Koska saltilla ei voi käskeä isäntäkonetta, on kaikki jo asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan, sen oikeudet muutetaan ja luodaan julkinen avain. Seuraavaksi lisäsin molemmille tietokoneille omat tilat, jotka suoritetaan grains.get:n avulla vain niille tarkoitetuilla koneilla. Ja viimeisenä VPN-tunnelin avaus. Tässä siis melkein sama sisältö kuin aikaisemmassa vaiheessa.
 
@@ -422,22 +425,24 @@ Tässä lopputulos:
       latest handshake: 18 minutes, 43 seconds ago
       transfer: 948 B received, 860 B sent
 
-P.s. Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa.
+
+
+P.s. Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa. Jonka takia viimeinen kohta näkyy muokkaantuneena myös.
 
 ## Lähteet
 
-https://www.cyberciti.biz/faq/how-to-configure-firewall-with-ufw-on-ubuntu-20-04-lts/
+Gite, V. 2022. How To Configure Firewall with UFW on Ubuntu 20.04 LTS. Luettavissa: https://www.cyberciti.biz/faq/how-to-configure-firewall-with-ufw-on-ubuntu-20-04-lts/. Luettu: 15.05.2023.
 
-https://docs.saltproject.io/en/getstarted/config/functions.html
+SaltStack Inc. s.a. SaltStack Configuration Management. Luettavissa: https://docs.saltproject.io/en/getstarted/config/functions.html. Luettu: 15.05.2023.
 
-https://docs.saltproject.io/salt/user-guide/en/latest/topics/states.html
+VMware, Inc. s.a. Salt states. Luettavissa: https://docs.saltproject.io/salt/user-guide/en/latest/topics/states.html. Luettu: 15.05.2023.
 
-https://docs.saltproject.io/salt/user-guide/en/latest/topics/requisites.html#requisites
+VMware, Inc. s.a. State requisites and declarations. Luettavissa: https://docs.saltproject.io/salt/user-guide/en/latest/topics/requisites.html#requisites. Luettu: 15.05.2023.
 
-https://github.com/rikurikurikuriku/Palvelinten-hallinta/blob/H7-Oma-Moduli/init.sls
+Rikurikurikuriku, 2021. SaltState for Wireguard configuration on Ubuntu. Luettavissa: https://github.com/rikurikurikuriku/Palvelinten-hallinta/blob/H7-Oma-Moduli/init.sls. Luettu: 15.05.2023.
 
-https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-debian-11
+Camisso, J., McGregor, M. 2022. How To Set Up WireGuard on Debian 11. Luettavissa: https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-debian-11. Luettu: 15.05.2023.
 
-https://upcloud.com/resources/tutorials/get-started-wireguard-vpn
+Kuusela, A. 2022. How to get started with WireGuard VPN. Luettavissa: https://upcloud.com/resources/tutorials/get-started-wireguard-vpn. Luettu: 15.05.2023.
 
-https://docs.saltproject.io/en/latest/ref/modules/all/index.html#all-salt-modules
+SaltStack. 2023. EXECUTION MODULES. Luettavissa: https://docs.saltproject.io/en/latest/ref/modules/all/index.html#all-salt-modules. Luettu: 15.05.2023.

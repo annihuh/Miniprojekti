@@ -1,5 +1,7 @@
 # Miniprojekti
 
+Osa kuvista ei toimi kun vaihdoin private > public.
+
 [Linkki UFW:n automatisointiin](#ufwn-automatisointi)
 
 ## UFW käsin

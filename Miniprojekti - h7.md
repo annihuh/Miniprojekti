@@ -209,6 +209,7 @@ Testi koneella a002:
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/d93ee84d-98f8-4f7b-a1e2-bd951aca4193">
 
+
 [Linkki WireGuardin automatisointiin](#wireguardin-automatisointi)
 
 ## WireGuard VPN käsin

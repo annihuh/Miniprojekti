@@ -403,7 +403,24 @@ Ajoin tilat molemmille koneille onnistuneesti. Seuraavaksi lisäsin ip-osoitteen
 
     sudo wg set wg0 peer skOsOgjIp4SJBdlXZbZWMBcPBW6Qxcw3RNBivZnRtVM= allowed-ips 172.16.0.110
 
+Tässä lopputulos:
 
+    interface: wg0
+      public key: S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+      private key: (hidden)
+      listening port: 51820
+
+    peer: skOsOgjIp4SJBdlXZbZWMBcPBW6Qxcw3RNBivZnRtVM=
+      endpoint: 192.168.12.102:51820
+      allowed ips: 172.16.0.110/32
+      latest handshake: 26 seconds ago
+      transfer: 180 B received, 92 B sent
+
+    peer: PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI=
+      endpoint: 192.168.12.100:51820
+      allowed ips: 172.16.0.100/32
+      latest handshake: 18 minutes, 43 seconds ago
+      transfer: 948 B received, 860 B sent
 
 P.s. Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa.
 

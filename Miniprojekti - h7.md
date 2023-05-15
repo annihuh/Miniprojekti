@@ -319,7 +319,53 @@ Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että
 
 Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin init.sls-tiedostoon seuraavat kohdat:
 
+    ufw_allow_wireguard:
+      cmd.run:
+        - name: "ufw allow 51820"
+
+    wireguard:
+      pkg.installed:
+        - name: wireguard
+
+    generate_private_key:
+      cmd.run:
+        - name: "wg genkey | tee /etc/wireguard/private.key"
+        - unless: "test -f /etc/wireguard/private.key"
+    file.managed:
+      - name: "/etc/wireguard/private.key"
+      - mode: 600
+
+    generate_public_key:
+      cmd.run:
+        - name: "cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key"
+        - unless: "test -f /etc/wireguard/public.key"
         
+    {% set network = '172.16.0.0/24' %}
+
+    {% set used_ips = salt['network.ip_addrs'](network) %}
+    {% set all_ips = salt['network.ip_addrs'](network, True) %}
+    {% set free_ips = all_ips | reject('in', used_ips) | list %}
+    {% set new_ip = free_ips | random if free_ips else '' %}
+
+    {% if new_ip %}
+
+    wg0_config:
+      file.managed:[<0;43;15m]
+        - name: "/etc/wireguard/wg0.conf"
+        - contents: |
+          [Interface]
+            PrivateKey = /etc/wireguard/private.key
+            Address = {{ new_ip }}/24
+            ListenPort = 51820
+
+          [Peer]
+            PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+            AllowedIPs = 172.16.0.0/24
+            Endpoint = 192.168.12.3:51820
+
+    {% endif %}
+
+
 
 ## Lähteet
 

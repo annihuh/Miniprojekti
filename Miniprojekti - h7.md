@@ -83,10 +83,6 @@ Tämä tarkoittaa sitä, että UFW:n konfiguraatiot on onnistuneet ja Telnet-yht
 
 Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. Komento siis luo pääkäyttäjän oikeuksien avulla mini-kansion annettuun sijaintiin ja kaikki puuttuvat kansiot sen edeltä. Sinne lisään tiedoston init.sls komennolla `sudoedit init.sls`. Salt-tilan sisältö:
 
-    update:
-      cmd.run:
-        - name: "sudo apt-get update"
-   
     ufw:
       pkg.installed:
         - name: ufw
@@ -282,11 +278,11 @@ Nyt server-puoli on valmis ja voin siirtyä konfiguroimaan clienttiä. Päivitin
     AllowedIPs = 172.16.0.0/24
     Endpoint = 192.168.12.3:51820
 
-AllowedIPs-kohdassa määritin verkon, jota reititetään VPN:n kautta. Endpointissa määrittelin osoitteen ja portin, johon haluan VPN-yhteyden yhdistyvän. Tähän kohtaan yleensä laitetaan julkinen ip-osoite. Kun sain määriteltyä a001:lle wg0.conf-tiedoston, lisäsin amasterille tiedon, että se sallii kaikki osoitteet verkosta:
+AllowedIPs-kohdassa määritin verkon, jota reititetään VPN:n kautta. Endpointissa määrittelin osoitteen ja portin, johon haluan VPN-yhteyden yhdistyvän. Tähän kohtaan yleensä laitetaan julkinen ip-osoite. Kun sain määriteltyä a001:lle wg0.conf-tiedoston, lisäsin amasterille tiedon, että se sallii osoitteen:
 
-    sudo wg set wg0 peer PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI= allowed-ips 172.16.0.0/24
+    sudo wg set wg0 peer PeA2lv4zgF8qpkeXfza6dnJ7gGUY6hPm/SZaySm+fWI= allowed-ips 172.16.0.100
 
-Ja tarkistin, miltä tiedosto näytti amasterilla.
+Käynnistin palvelimen uudestaan ja tarkistin, miltä tiedosto näytti amasterilla.
 
     $ sudo wg
     interface: wg0
@@ -309,7 +305,7 @@ Seuraavaksi avasin tunnelin a001:llä ja katsoin statuksen.
 
     peer: S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
       endpoint: 192.168.12.3:51820
-      allowed ips: 172.16.0.0/24
+      allowed ips: 172.16.0.100/32
 
 Viimeiseksi suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, että UFW avaa WireGuardin vaatiman portin. Nyt VPN on valmis käytettäväksi. Kokeilin vielä pingaamalla, että kulkeeko liikenne VPN:n läpi. Toimi molemmin päin.
 
@@ -333,7 +329,7 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
         - unless: "test -f /etc/wireguard/private.key"
     file.managed:
       - name: "/etc/wireguard/private.key"
-      - mode: 600
+      - mode: 0600
 
     generate_public_key:
       cmd.run:
@@ -347,29 +343,56 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
     {% set free_ips = all_ips | reject('in', used_ips) | list %}
     {% set new_ip = free_ips | random if free_ips else '' %}
 
-    {% if new_ip %}
+    {% if grains.get('id') == 'a001' %}
 
     wg0_config:
-      file.managed:[<0;43;15m]
+      file.managed:
         - name: "/etc/wireguard/wg0.conf"
+        - makedirs: True
         - contents: |
-          [Interface]
-            PrivateKey = /etc/wireguard/private.key
-            Address = {{ new_ip }}/24
+            [Interface]
+            PrivateKey = {{ salt['file.read']('/etc/wireguard/private.key') }}
+            Address = 172.16.0.100/24
             ListenPort = 51820
 
-          [Peer]
+            [Peer]
             PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
             AllowedIPs = 172.16.0.0/24
             Endpoint = 192.168.12.3:51820
+            PersistentKeepalive = 25
+
+    {% endif %}
+    
+    {% if grains.get('id') == 'a002' %}
+
+    wg0_config:
+      file.managed:
+        - name: "/etc/wireguard/wg0.conf"
+        - makedirs: True
+        - contents: |
+            [Interface]
+            PrivateKey = {{ salt['file.read']('/etc/wireguard/private.key') }}
+            Address = 172.16.0.101/24
+            ListenPort = 51820
+
+            [Peer]
+            PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+            AllowedIPs = 172.16.0.0/24
+            Endpoint = 192.168.12.3:51820
+            PersistentKeepalive = 25
 
     {% endif %}
     
     open_tunnel:
       cmd.run:
         - name: "sudo wg-quick up wg0"
+        - unless: "sudo wg show wg0 | grep -q wg0"
 
 Koska saltilla ei voi käskeä isäntäkonetta on jo kaikki oleteutetusti asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan ja sen oikeudet muutetaan ja luodaan julkinen avain. Seuraavaksi tein Jinjalla (Python-kielen web-pohjamoottori) tilan, joka arpoo ip-osoitteen valitusta verkosta 172.16.0.0/24, joka ei ole käytössä. Tilan sisällä lukee wg0.conf tiedoston haluttu sisältö. Sen jälkeen vielä avasin VPN-tunnelin.
+
+Tarkistin menisikö tilat läpi, jonka jälkeen ajoin tilat molemmille koneille onnistuneesti. Seuraavaksi lisäsin ip-osoitteen ja julkisen avaimen amasterille.
+
+    
 
 ## Lähteet
 

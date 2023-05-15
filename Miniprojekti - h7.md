@@ -364,6 +364,10 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
             Endpoint = 192.168.12.3:51820
 
     {% endif %}
+    
+    open_tunnel:
+      cmd.run:
+        - name: "sudo wg-quick up wg0"
 
 
 

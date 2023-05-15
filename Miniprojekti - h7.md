@@ -1,4 +1,4 @@
-# h7 - Miniprojekti
+# Miniprojekti
 
 ## UFW käsin
 

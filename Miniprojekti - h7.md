@@ -404,7 +404,6 @@ Tässä lopputulos:
 
 Tämän jälkeen tein muutoksen amasterilla `/etc/sysctl.conf` tiedostoon, josta otin #-merkin pois riviltä `#net.ipv4.ip_forward=1`. Testasin pingata a001 > a002 ja se onnistui.
 
-<img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/19b9ab8a-2fc0-4ec4-8630-b915e3ef2d92">
 
 Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa. Jonka takia viimeinen kohta näkyy muokkaantuneena myös. Ehdollisuus init.sls-tiedostossa olisi kenties auttanut.
 

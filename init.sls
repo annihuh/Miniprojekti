@@ -35,6 +35,7 @@ wireguard:
 generate_private_key:
   cmd.run:
     - name: "wg genkey | tee /etc/wireguard/private.key"
+    - makedirs: True
     - unless: "test -f /etc/wireguard/private.key"
 
 change_mode:
@@ -45,6 +46,7 @@ change_mode:
 generate_public_key:
   cmd.run:
     - name: "cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key"
+    - makedirs: True
     - unless: "test -f /etc/wireguard/public.key"
 
 {% if grains.get('id') == 'a001' %}

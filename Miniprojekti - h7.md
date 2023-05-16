@@ -402,7 +402,7 @@ Tässä lopputulos:
       latest handshake: 18 minutes, 43 seconds ago
       transfer: 948 B received, 860 B sent
 
-Tämän jälkeen tein muutoksen amasterilla `/etc/sysctl.conf` tiedostoon, josta otin #-merkin pois riviltä `#net.ipv4.ip_forward=1`. Testasin pingata a001 > a002 ja se onnistui.
+Tämän jälkeen tein muutoksen amasterilla `/etc/sysctl.conf` tiedostoon, josta otin #-merkin pois riviltä `#net.ipv4.ip_forward=1`. Mahdollistaa masterin läpi kulkevan liikenteen. Testasin pingata a001 > a002 ja se onnistui.
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/19b9ab8a-2fc0-4ec4-8630-b915e3ef2d92">
 

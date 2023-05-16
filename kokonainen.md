@@ -1,4 +1,5 @@
-- vagrant up
+# Suuntaa antava järjestys, miten komennot voisi suorittaa
+-  vagrant up
 - vagrant ssh [masterin nimi]
 - sudo salt-key -A
 - sudo apt-get update

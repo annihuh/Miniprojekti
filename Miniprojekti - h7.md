@@ -423,3 +423,5 @@ Camisso, J., McGregor, M. 2022. How To Set Up WireGuard on Debian 11. Luettaviss
 Kuusela, A. 2022. How to get started with WireGuard VPN. Luettavissa: https://upcloud.com/resources/tutorials/get-started-wireguard-vpn. Luettu: 15.05.2023.
 
 SaltStack. 2023. EXECUTION MODULES. Luettavissa: https://docs.saltproject.io/en/latest/ref/modules/all/index.html#all-salt-modules. Luettu: 15.05.2023.
+
+OpenAI, ChatGPT. 2023. Käytettävissä: https://chat.openai.com/. Käytetty: 15.05.2023.

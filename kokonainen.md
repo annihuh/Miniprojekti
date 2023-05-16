@@ -10,11 +10,15 @@
 - sudo ufw deny telnet
 - sudo ufw enable
 - sudo ufw status
-- Testaa yhteys
-- ssh [nimi]@[ip-osoite]
+- Testaa yhteys: 
+        
+        $ ssh [nimi]@[ip-osoite]
+        
 - Vaihtoehtoinen asennus ja testi
-- sudo apt-get install telnet
-- $ telnet 192.168.12.3
+
+        $ sudo apt-get install telnet
+        $ telnet 192.168.12.3
+        
 - sudo ufw allow 4505/tcp && sudo ufw allow 4506/tcp
 - sudo ufw allow 51820
 - sudo ufw reload tai enable

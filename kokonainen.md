@@ -1,4 +1,7 @@
 # Suuntaa antava järjestys, miten komennot voisi suorittaa
+
+Suoritetaan masterilla ellei toisin mainita.
+
 -  vagrant up
 - vagrant ssh [masterin nimi]
 - sudo salt-key -A
@@ -45,7 +48,8 @@
 - sudo salt '*' state.apply mini
 - sudo salt '*' state.apply projekti
 - minioneilla: sudo wg ja katso public.key > kopioi 
-- liitä masterilla: sudo wg set wg0 peer [avain] allowed-ips [koneen ip-osoite]
-- masterilla: sudo wg-quick up wg0 
+- sudo wg set wg0 peer [avain] allowed-ips [koneen ip-osoite]
+- sudo wg-quick up wg0 
+- muokkaa /etc/sysctl.conf näin: #net.ipv4.ip_forward=1 > net.ipv4.ip_forward=1
     
 Selitykset raportissa: https://github.com/annihuh/Miniprojekti/blob/main/Miniprojekti%20-%20h7.md tai tutstu lähteisiin.

@@ -26,6 +26,7 @@ ufw_allow_wireguard:
 ufw_enable:
   service.running:
     - name: ufw
+    - enable: True
     
 wireguard:
   pkg.installed:

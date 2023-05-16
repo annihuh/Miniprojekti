@@ -1,5 +1,3 @@
-Masterille:
-
     vagrant up
     vagrant ssh [masterin nimi]
     sudo salt-key -A

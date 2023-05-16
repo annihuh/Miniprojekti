@@ -303,6 +303,11 @@ Sen jälkeen suoritin komennot `sudo ufw allow 51820` ja `sudo ufw enable`, ett�
 
 Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin init.sls-tiedostoon seuraavat kohdat:
 
+    ufw_enable:
+      cmd.run:
+        - name: "sudo ufw enable"
+        - unless: "sudo ufw status | grep -q 'Status: active'"
+    
     ufw_allow_wireguard:
       cmd.run:
         - name: "ufw allow 51820"
@@ -329,7 +334,7 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
       cmd.run:
         - name: "cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key"
         
-Koska saltilla ei voi käskeä isäntäkonetta, on kaikki jo asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan, sen oikeudet muutetaan ja luodaan julkinen avain. Tein vielä uuden kansion /srv/salt/projekti, jossa toinen init.sls tiedosto. Sisältö:
+Koska saltilla ei voi käskeä isäntäkonetta, on kaikki jo asennettu sille. Tiiviisti selitettynä siis ajetaan komento ufw enable, portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan, sen oikeudet muutetaan ja luodaan julkinen avain. Tein vielä uuden kansion /srv/salt/projekti, jossa toinen init.sls tiedosto. Sisältö:
 
     {% if grains.get('id') == 'a001' %}
 

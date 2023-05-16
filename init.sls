@@ -66,7 +66,9 @@ wg0_config_a001:
         AllowedIPs = 172.16.0.0/24
         Endpoint = 192.168.12.3:51820
         PersistentKeepalive = 25
-
+    - require:
+      cmd: generate_private_key
+        
 {% endif %}
 
 {% if grains.get('id') == 'a002' %}
@@ -86,7 +88,9 @@ wg0_config_a002:
         AllowedIPs = 172.16.0.0/24
         Endpoint = 192.168.12.3:51820
         PersistentKeepalive = 25
-
+  - require:
+    - cmd: generate_private_key
+        
 {% endif %}
 
 open_tunnel:

@@ -42,6 +42,8 @@
 - sudo mkdir -p /srv/salt/[kansion nimi]
 - sudoedit /srv/salt/mini/init.sls löytyy täältä: https://github.com/annihuh/Miniprojekti/blob/main/Mini/init.sls
 - sudoedit /srv/salt/projekti/init.sls löytyy täältä: https://github.com/annihuh/Miniprojekti/blob/main/Projekti/init.sls
+- sudo salt '*' state.apply mini
+- sudo salt '*' state.apply projekti
 - minioneilla: sudo wg ja katso public.key > kopioi masterille: sudo wg set wg0 peer [avain] allowed-ips [koneen ip-osoite]
 - masterilla: sudo wg-quick up wg0 
     

@@ -83,10 +83,12 @@ Seuraavaksi loin kansion, johon lisäsin tilan: `sudo mkdir -p /srv/salt/mini`. 
     ufw_allow_ssh:
       cmd.run:
         - name: "ufw allow 22"
+        - unless: "ufw status | grep '22.*ALLOW.*Anywhere'"
     
     ufw_deny_telnet:
       cmd.run:
         - name: "ufw deny 23"
+        - unless: "ufw status | grep '23.*DENY.*Anywhere'"
 
 Ensimmäinen kohta asentaa UFW-palomuurin, seuraava asentaa ja käynnistää SSH:n. Kolmas sallii SSH-yhteyden ja viimeinen kieltää Telnet-ytheyden. Ajoin komennon, jonka tarkoitus on vain testata menisikö tilat läpi oikeassa tapauksessa. En halunnut vielä ajaa ns. oikeaa tilaa ennen kuin olin varma, että tiedosto on tehty oikein.
 
@@ -304,30 +306,30 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
     ufw_allow_wireguard:
       cmd.run:
         - name: "ufw allow 51820"
+        - unless: "ufw status | grep '51820.*ALLOW.*Anywhere'"
 
     wireguard:
       pkg.installed:
         - name: wireguard
 
     generate_private_key:
+      file.managed:
+        - name: "/etc/wireguard/private.key"
+        - makedirs: True
+        - mode: 0600
+        - unless: "test -f /etc/wireguard/private.key"
       cmd.run:
         - name: "wg genkey | tee /etc/wireguard/private.key"
-        - unless: "test -f /etc/wireguard/private.key"
-    file.managed:
-      - name: "/etc/wireguard/private.key"
-      - mode: 0600
 
     generate_public_key:
+      file.managed:
+        - name: "/etc/wireguard/public.key"
+        - makedirs: True
+        - unless: "test -f /etc/wireguard/public.key"
       cmd.run:
         - name: "cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key"
-        - unless: "test -f /etc/wireguard/public.key"
         
-    {% set network = '172.16.0.0/24' %}
-
-    {% set used_ips = salt['network.ip_addrs'](network) %}
-    {% set all_ips = salt['network.ip_addrs'](network, True) %}
-    {% set free_ips = all_ips | reject('in', used_ips) | list %}
-    {% set new_ip = free_ips | random if free_ips else '' %}
+Koska saltilla ei voi käskeä isäntäkonetta, on kaikki jo asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan, sen oikeudet muutetaan ja luodaan julkinen avain. Tein vielä uuden kansion /srv/salt/projekti, jossa toinen init.sls tiedosto. Sisältö:
 
     {% if grains.get('id') == 'a001' %}
 
@@ -342,44 +344,37 @@ Viimeisenä vielä automatisoin Saltilla WireGuardin konfiguroimisen. Lisäsin i
             ListenPort = 51820
 
             [Peer]
-            PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+            PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=       
             AllowedIPs = 172.16.0.0/24
             Endpoint = 192.168.12.3:51820
             PersistentKeepalive = 25
 
     {% endif %}
-    
-    {% if grains.get('id') == 'a002' %}
 
+    {% if grains.get('id') == 'a002' %}
+    {% set private_key = salt['file.read']('/etc/wireguard/private.key') %}
+    
     wg0_config_a002:
       file.managed:
         - name: "/etc/wireguard/wg0.conf"
         - makedirs: True
         - contents: |
             [Interface]
-            PrivateKey = {{ salt['file.read']('/etc/wireguard/private.key') }}
+            PrivateKey = {{ private_key }}
             Address = 172.16.0.101/24
             ListenPort = 51820
 
             [Peer]
-            PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=
+            PublicKey = S0RuAg+2cJz4dXp6f3W1GQQ1xsOK9lHnEuE8YsGtdDk=        
             AllowedIPs = 172.16.0.0/24
             Endpoint = 192.168.12.3:51820
             PersistentKeepalive = 25
 
     {% endif %}
-    
-    open_tunnel:
-      cmd.run:
-        - name: |
-            "sudo wg-quick down wg0"
-            "sudo wg-quick up wg0"
-        - watch:
-          - file: "/etc/wireguard/wg0.conf"
 
-Koska saltilla ei voi käskeä isäntäkonetta, on kaikki jo asennettu sille. Tiiviisti selitettynä siis portin 51820 liikenne sallitaan, WireGuard asennetaan minioneille, yksityinen avain luodaan, sen oikeudet muutetaan ja luodaan julkinen avain. Seuraavaksi lisäsin molemmille tietokoneille omat tilat, jotka suoritetaan grains.get:n avulla vain niille tarkoitetuilla koneilla. Ja viimeisenä VPN-tunnelin avaus. Tässä siis melkein sama sisältö kuin aikaisemmassa vaiheessa.
+Tässä lisäsin molemmille tietokoneille omat tilat, jotka suoritetaan grains.get:n avulla vain niille tarkoitetuilla koneilla. Syynä tässä on se, että tiloja suorittaessa jostain syystä /projekti/init.sls tiedoston sisältö olisi ajautunut ensin, jonka takia mitkään tilat eivät suoriudu. Tiloissa on muutama kohta, joista en osannut tehdä idempotenssia, joten ne ajautuvat aina, vaikkei pitäisi.
 
-Ajoin tilat molemmille koneille onnistuneesti. Seuraavaksi lisäsin ip-osoitteen ja julkisen avaimen amasterille, koska käytössä on itse keksimäni staattiset osoitteet.
+Seuraavaksi ajoin tilat molemmille koneille onnistuneesti. Seuraavaksi lisäsin ip-osoitteen ja julkisen avaimen amasterille, koska käytössä on itse keksimäni staattiset osoitteet.
 
     sudo wg set wg0 peer skOsOgjIp4SJBdlXZbZWMBcPBW6Qxcw3RNBivZnRtVM= allowed-ips 172.16.0.110
 
@@ -405,8 +400,6 @@ Tässä lopputulos:
 Tämän jälkeen tein muutoksen amasterilla `/etc/sysctl.conf` tiedostoon, josta otin #-merkin pois riviltä `#net.ipv4.ip_forward=1`. Testasin pingata a001 > a002 ja se onnistui.
 
 <img width="auto" alt="image" src="https://github.com/annihuh/Miniprojekti/assets/101214286/19b9ab8a-2fc0-4ec4-8630-b915e3ef2d92">
-
-Huomasin jälkeenpäin, että UFW-sääntöjen ajamisessa jokin outo ominaisuus, koska ne aina ilmoittaa yrittäneensä muokata sääntöjä, mutta ei todellisuudessa sitä tee, koska säännöt on jo olemassa. Viimeinen kohta näkyy muokkaantuneena myös. Ehdollisuus init.sls-tiedostossa olisi kenties auttanut.
 
 ## Lähteet
 
